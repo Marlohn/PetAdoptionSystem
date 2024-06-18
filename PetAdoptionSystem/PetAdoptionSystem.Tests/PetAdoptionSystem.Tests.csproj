@@ -17,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PetAdoptionSystem.Api\PetAdoptionSystem.Api.csproj" />
     <ProjectReference Include="..\PetAdoptionSystem.AppHost\PetAdoptionSystem.AppHost.csproj" />
+    <ProjectReference Include="..\PetAdoptionSystem.Domain\PetAdoptionSystem.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
