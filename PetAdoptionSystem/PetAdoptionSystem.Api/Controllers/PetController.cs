@@ -17,6 +17,7 @@ namespace PetAdoptionSystem.Api.Controllers
         public async Task<IActionResult> GetAllPets()
         {
             var pets = await _petService.GetAllPetsAsync();
+
             return Ok(pets);
         }
 
@@ -24,10 +25,12 @@ namespace PetAdoptionSystem.Api.Controllers
         public async Task<IActionResult> GetPetById(Guid id)
         {
             var pet = await _petService.GetPetByIdAsync(id);
+
             if (pet == null)
             {
                 return NotFound();
             }
+
             return Ok(pet);
         }
 
@@ -35,6 +38,7 @@ namespace PetAdoptionSystem.Api.Controllers
         public async Task<IActionResult> CreatePet([FromBody] PetDto petDto)
         {
             await _petService.AddPetAsync(petDto);
+
             return CreatedAtAction(nameof(GetPetById), new { id = petDto.Id }, petDto);
         }
 

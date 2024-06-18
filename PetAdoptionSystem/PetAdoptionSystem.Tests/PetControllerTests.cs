@@ -5,7 +5,7 @@ using PetAdoptionSystem.Application.Dtos;
 using PetAdoptionSystem.Application.Interfaces;
 using PetAdoptionSystem.Tests.Faker;
 
-namespace PetAdoptionSystem.Tests.Api
+namespace PetAdoptionSystem.Tests
 {
     public class PetControllerTests
     {
@@ -22,7 +22,7 @@ namespace PetAdoptionSystem.Tests.Api
         public async Task GetAllPets_ReturnsOkResult_WithListOfPets()
         {
             // Arrange
-            var pets = FakeDataGenerator.Pets.Generate(5);
+            var pets = FakeDataGenerator.PetDto.Generate(5);
             _petServiceMock.Setup(service => service.GetAllPetsAsync()).ReturnsAsync(pets);
 
             // Act
@@ -38,7 +38,7 @@ namespace PetAdoptionSystem.Tests.Api
         public async Task GetPetById_ReturnsOkResult_WithPet()
         {
             // Arrange
-            var pet = FakeDataGenerator.Pets.Generate();
+            var pet = FakeDataGenerator.PetDto.Generate();
             _petServiceMock.Setup(service => service.GetPetByIdAsync(pet.Id)).ReturnsAsync(pet);
 
             // Act
@@ -68,7 +68,7 @@ namespace PetAdoptionSystem.Tests.Api
         public async Task CreatePet_ReturnsCreatedAtActionResult_WithPet()
         {
             // Arrange
-            var pet = FakeDataGenerator.Pets.Generate();
+            var pet = FakeDataGenerator.PetDto.Generate();
             _petServiceMock.Setup(service => service.AddPetAsync(It.IsAny<PetDto>())).Returns(Task.CompletedTask);
 
             // Act
@@ -85,7 +85,7 @@ namespace PetAdoptionSystem.Tests.Api
         public async Task UpdatePet_ReturnsNoContentResult()
         {
             // Arrange
-            var pet = FakeDataGenerator.Pets.Generate();
+            var pet = FakeDataGenerator.PetDto.Generate();
             _petServiceMock.Setup(service => service.UpdatePetAsync(It.IsAny<PetDto>())).Returns(Task.CompletedTask);
 
             // Act
@@ -99,7 +99,7 @@ namespace PetAdoptionSystem.Tests.Api
         public async Task UpdatePet_ReturnsBadRequestResult_WhenIdsDoNotMatch()
         {
             // Arrange
-            var pet = FakeDataGenerator.Pets.Generate();
+            var pet = FakeDataGenerator.PetDto.Generate();
             var differentPetId = Guid.NewGuid();
 
             // Act
