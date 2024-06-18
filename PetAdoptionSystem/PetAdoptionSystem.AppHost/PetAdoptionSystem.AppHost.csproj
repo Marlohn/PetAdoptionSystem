@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PetAdoptionSystem.ApiService\PetAdoptionSystem.ApiService.csproj" />
+    <ProjectReference Include="..\PetAdoptionSystem.ApiService\PetAdoptionSystem.Api.csproj" />
     <ProjectReference Include="..\PetAdoptionSystem.Web\PetAdoptionSystem.Web.csproj" />
   </ItemGroup>
 

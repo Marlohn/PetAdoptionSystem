@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetAdoptionSystem.AppHost",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetAdoptionSystem.ServiceDefaults", "PetAdoptionSystem.ServiceDefaults\PetAdoptionSystem.ServiceDefaults.csproj", "{F3CA03A8-A66F-440B-9B12-B19A441A3039}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetAdoptionSystem.ApiService", "PetAdoptionSystem.ApiService\PetAdoptionSystem.ApiService.csproj", "{990AF520-778E-4656-926F-5463A97DD46E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetAdoptionSystem.Api", "PetAdoptionSystem.ApiService\PetAdoptionSystem.Api.csproj", "{990AF520-778E-4656-926F-5463A97DD46E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetAdoptionSystem.Web", "PetAdoptionSystem.Web\PetAdoptionSystem.Web.csproj", "{FEABEE12-C734-4536-9C94-F418330B7FAB}"
 EndProject
