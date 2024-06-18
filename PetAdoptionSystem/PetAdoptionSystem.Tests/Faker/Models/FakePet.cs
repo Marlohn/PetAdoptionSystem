@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using PetAdoptionSystem.Domain.Models;
+using PetAdoptionSystem.Application.Dtos;
 
 namespace PetAdoptionSystem.Tests.Faker.Models
 {
@@ -12,7 +12,7 @@ namespace PetAdoptionSystem.Tests.Faker.Models
         private static readonly string[] BirdBreeds = { "Parrot", "Canary", "Sparrow" };
         private static readonly string[] FishBreeds = { "Goldfish", "Betta", "Guppy" };
 
-        private static readonly Faker<Pet> _faker = new Faker<Pet>()
+        private static readonly Faker<PetDto> _faker = new Faker<PetDto>()
             .RuleFor(p => p.Id, f => Guid.NewGuid())
             .RuleFor(p => p.Type, f => f.PickRandom(new[] { "Dog", "Cat", "Bird", "Fish" }))
             .RuleFor(p => p.Sex, f => f.PickRandom(new[] { "Male", "Female" }))
@@ -35,12 +35,12 @@ namespace PetAdoptionSystem.Tests.Faker.Models
                 };
             });
 
-        public Pet Generate()
+        public PetDto Generate()
         {
             return _faker.Generate();
         }
 
-        public List<Pet> Generate(int count)
+        public List<PetDto> Generate(int count)
         {
             return _faker.Generate(count);
         }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PetAdoptionSystem.Domain.Models;
-using PetAdoptionSystem.Domain.Services;
+using PetAdoptionSystem.Application.Dtos;
+using PetAdoptionSystem.Application.Interfaces;
 
 namespace PetAdoptionSystem.Api.Controllers
 {
@@ -16,9 +16,47 @@ namespace PetAdoptionSystem.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllPets()
         {
-            List<Pet> result = await _petService.GetAllPetsAsync();
+            var pets = await _petService.GetAllPetsAsync();
+            return Ok(pets);
+        }
 
-            return Ok(result);
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPetById(Guid id)
+        {
+            var pet = await _petService.GetPetByIdAsync(id);
+            if (pet == null)
+            {
+                return NotFound();
+            }
+            return Ok(pet);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePet([FromBody] PetDto petDto)
+        {
+            await _petService.AddPetAsync(petDto);
+            return CreatedAtAction(nameof(GetPetById), new { id = petDto.Id }, petDto);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePet(Guid id, [FromBody] PetDto petDto)
+        {
+            if (id != petDto.Id)
+            {
+                return BadRequest();
+            }
+
+            await _petService.UpdatePetAsync(petDto);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePet(Guid id)
+        {
+            await _petService.DeletePetAsync(id);
+
+            return NoContent();
         }
     }
 }

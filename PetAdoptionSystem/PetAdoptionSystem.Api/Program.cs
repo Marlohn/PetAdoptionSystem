@@ -1,4 +1,6 @@
 
+using PetAdoptionSystem.ServiceDefaults;
+
 namespace PetAdoptionSystem.Api;
 
 public class Program
