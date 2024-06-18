@@ -1,5 +1,4 @@
-﻿
-namespace PetAdoptionSystem.Domain.Models
+﻿namespace PetAdoptionSystem.Domain.Models
 {
     public class Pet
     {

@@ -3,6 +3,7 @@ using Moq;
 using PetAdoptionSystem.Api.Controllers;
 using PetAdoptionSystem.Domain.Models;
 using PetAdoptionSystem.Domain.Services;
+using PetAdoptionSystem.Tests.Faker;
 
 namespace PetAdoptionSystem.Tests.Api
 {
@@ -21,14 +22,7 @@ namespace PetAdoptionSystem.Tests.Api
         public async Task GetAllPets_ReturnsOkResult_WithListOfPets()
         {
             // Arrange
-            var pets = new List<Pet>
-            {
-                new Pet { Id = Guid.NewGuid(), Name = "Max", Type = "Dog", Sex = "Male", Breed = "Beagle" },
-                new Pet { Id = Guid.NewGuid(), Name = "Luna", Type = "Dog", Sex = "Female", Breed = "Golden Retriever" },
-                new Pet { Id = Guid.NewGuid(), Name = "Toby", Type = "Dog", Sex = "Male", Breed = "N/A" },
-                new Pet { Id = Guid.NewGuid(), Name = "Lola", Type = "Cat", Sex = "Female", Breed = "N/A" },
-            };
-
+            List<Pet> pets = FakeDataGenerator.Pets.Generate(5);
             _petServiceMock.Setup(service => service.GetAllPetsAsync()).ReturnsAsync(pets);
 
             // Act
