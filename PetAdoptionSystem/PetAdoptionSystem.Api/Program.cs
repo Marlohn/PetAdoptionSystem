@@ -1,4 +1,3 @@
-
 using PetAdoptionSystem.Infra.IoC;
 using PetAdoptionSystem.ServiceDefaults;
 
@@ -18,7 +17,8 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddProjectDependencies("connectionString");
+        string dbConnectionString = builder.Configuration.GetConnectionString("marlohnDb") ?? string.Empty; // Fix it
+        builder.Services.AddProjectDependencies(dbConnectionString);
 
         var app = builder.Build();
 

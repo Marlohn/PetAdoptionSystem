@@ -11,10 +11,7 @@ namespace PetAdoptionSystem.Infra.IoC
         public static void AddProjectDependencies(this IServiceCollection services, string connectionString)
         {
             services.AddScoped<IPetService, PetService>();
-            services.AddScoped<IPetRepository, PetRepository>();
-
-            //services.AddScoped<IPetRepository>(provider =>
-            //    new PetRepository(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IPetRepository>(provider => new PetRepository(connectionString));
         }
     }
 }

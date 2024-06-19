@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PetAdoptionSystem.Application\PetAdoptionSystem.Application.csproj" />
     <ProjectReference Include="..\PetAdoptionSystem.Domain\PetAdoptionSystem.Domain.csproj" />
   </ItemGroup>
 
