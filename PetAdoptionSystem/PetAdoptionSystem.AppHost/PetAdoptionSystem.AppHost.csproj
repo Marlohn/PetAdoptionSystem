@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>77d9c0d1-da80-4c0a-8b7c-717c8e87e527</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PetAdoptionSystem.ApiService\PetAdoptionSystem.ApiService.csproj" />
+    <ProjectReference Include="..\PetAdoptionSystem.Api\PetAdoptionSystem.Api.csproj" />
+    <ProjectReference Include="..\PetAdoptionSystem.Web\PetAdoptionSystem.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" Version="8.0.1" />
+    <PackageReference Include="Aspire.Microsoft.Data.SqlClient" Version="8.0.1" />
+  </ItemGroup>
+
+</Project>
