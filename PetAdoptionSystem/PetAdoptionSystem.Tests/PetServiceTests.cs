@@ -112,7 +112,7 @@ namespace PetAdoptionSystem.Tests
             _petRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<Pet>())).Returns(Task.CompletedTask);
 
             // Act
-            await _petService.UpdatePetAsync(petDto);
+            await _petService.UpdatePetAsync(pet.Id, petDto);
 
             // Assert
             _petRepositoryMock.Verify(repo => repo.UpdateAsync(It.Is<Pet>(p =>

@@ -86,7 +86,9 @@ namespace PetAdoptionSystem.Tests
         {
             // Arrange
             var pet = FakeDataGenerator.PetDto.Generate();
-            _petServiceMock.Setup(service => service.UpdatePetAsync(It.IsAny<PetResponseDto>())).Returns(Task.CompletedTask);
+            var petId = Guid.NewGuid();
+
+            _petServiceMock.Setup(service => service.UpdatePetAsync(petId, It.IsAny<PetResponseDto>())).Returns(Task.CompletedTask);
 
             // Act
             var result = await _petController.UpdatePet(pet.Id, pet);
