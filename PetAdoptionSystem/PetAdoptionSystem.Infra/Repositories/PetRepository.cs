@@ -77,14 +77,13 @@ namespace PetAdoptionSystem.Infra.Repositories
 
         public async Task CreateAsync(Pet pet)
         {
-            const string query = "INSERT INTO Pets (Id, Name, Type, Breed, Sex) VALUES (@Id, @Name, @Type, @Breed, @Sex)";
+            const string query = "INSERT INTO Pets (Name, Type, Breed, Sex) VALUES (@Name, @Type, @Breed, @Sex)";
 
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = pet.Id });
                     command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar, 50) { Value = pet.Name });
                     command.Parameters.Add(new SqlParameter("@Type", SqlDbType.NVarChar, 50) { Value = pet.Type });
                     command.Parameters.Add(new SqlParameter("@Breed", SqlDbType.NVarChar, 50) { Value = pet.Breed });

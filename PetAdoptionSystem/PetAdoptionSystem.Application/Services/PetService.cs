@@ -14,11 +14,11 @@ namespace PetAdoptionSystem.Application.Services
             _petRepository = petRepository;
         }
 
-        public async Task<List<PetDto>> GetAllPetsAsync()
+        public async Task<List<PetResponseDto>> GetAllPetsAsync()
         {
             var pets = await _petRepository.GetAllAsync();
 
-            return pets.Select(p => new PetDto
+            return pets.Select(p => new PetResponseDto
             {
                 Id = p.Id,
                 Name = p.Name,
@@ -28,7 +28,7 @@ namespace PetAdoptionSystem.Application.Services
             }).ToList();
         }
 
-        public async Task<PetDto?> GetPetByIdAsync(Guid id)
+        public async Task<PetResponseDto?> GetPetByIdAsync(Guid id)
         {
             var pet = await _petRepository.GetByIdAsync(id);
 
@@ -37,7 +37,7 @@ namespace PetAdoptionSystem.Application.Services
                 return null;
             }
 
-            return new PetDto
+            return new PetResponseDto
             {
                 Id = pet.Id,
                 Name = pet.Name,
@@ -47,11 +47,10 @@ namespace PetAdoptionSystem.Application.Services
             };
         }
 
-        public async Task AddPetAsync(PetDto petDto)
+        public async Task AddPetAsync(PetRequestDto petDto)
         {
             var pet = new Pet
             {
-                Id = petDto.Id,
                 Name = petDto.Name,
                 Type = petDto.Type,
                 Breed = petDto.Breed,
@@ -61,11 +60,11 @@ namespace PetAdoptionSystem.Application.Services
             await _petRepository.CreateAsync(pet);
         }
 
-        public async Task UpdatePetAsync(PetDto petDto)
+        public async Task UpdatePetAsync(Guid id, PetRequestDto petDto)
         {
             var pet = new Pet
             {
-                Id = petDto.Id,
+                Id = id,
                 Name = petDto.Name,
                 Type = petDto.Type,
                 Breed = petDto.Breed,

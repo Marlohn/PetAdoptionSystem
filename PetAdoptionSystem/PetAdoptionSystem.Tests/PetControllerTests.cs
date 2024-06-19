@@ -30,7 +30,7 @@ namespace PetAdoptionSystem.Tests
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<List<PetDto>>(okResult.Value);
+            var returnValue = Assert.IsType<List<PetResponseDto>>(okResult.Value);
             Assert.Equal(pets, returnValue);
         }
 
@@ -46,7 +46,7 @@ namespace PetAdoptionSystem.Tests
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<PetDto>(okResult.Value);
+            var returnValue = Assert.IsType<PetResponseDto>(okResult.Value);
             Assert.Equal(pet, returnValue);
         }
 
@@ -55,7 +55,7 @@ namespace PetAdoptionSystem.Tests
         {
             // Arrange
             var petId = Guid.NewGuid();
-            _petServiceMock.Setup(service => service.GetPetByIdAsync(petId)).ReturnsAsync((PetDto?)null);
+            _petServiceMock.Setup(service => service.GetPetByIdAsync(petId)).ReturnsAsync((PetResponseDto?)null);
 
             // Act
             var result = await _petController.GetPetById(petId);
@@ -69,14 +69,14 @@ namespace PetAdoptionSystem.Tests
         {
             // Arrange
             var pet = FakeDataGenerator.PetDto.Generate();
-            _petServiceMock.Setup(service => service.AddPetAsync(It.IsAny<PetDto>())).Returns(Task.CompletedTask);
+            _petServiceMock.Setup(service => service.AddPetAsync(It.IsAny<PetResponseDto>())).Returns(Task.CompletedTask);
 
             // Act
             var result = await _petController.CreatePet(pet);
 
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-            var returnValue = Assert.IsType<PetDto>(createdAtActionResult.Value);
+            var returnValue = Assert.IsType<PetResponseDto>(createdAtActionResult.Value);
             Assert.Equal(pet.Id, returnValue.Id);
         }
 
@@ -86,7 +86,7 @@ namespace PetAdoptionSystem.Tests
         {
             // Arrange
             var pet = FakeDataGenerator.PetDto.Generate();
-            _petServiceMock.Setup(service => service.UpdatePetAsync(It.IsAny<PetDto>())).Returns(Task.CompletedTask);
+            _petServiceMock.Setup(service => service.UpdatePetAsync(It.IsAny<PetResponseDto>())).Returns(Task.CompletedTask);
 
             // Act
             var result = await _petController.UpdatePet(pet.Id, pet);

@@ -37,22 +37,17 @@ namespace PetAdoptionSystem.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePet([FromBody] PetDto petDto)
+        public async Task<IActionResult> CreatePet([FromBody] PetRequestDto petDto)
         {
             await _petService.AddPetAsync(petDto);
 
-            return CreatedAtAction(nameof(GetPetById), new { id = petDto.Id }, petDto);
+            return Created();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePet(Guid id, [FromBody] PetDto petDto)
+        public async Task<IActionResult> UpdatePet(Guid id, [FromBody] PetRequestDto petDto)
         {
-            if (id != petDto.Id)
-            {
-                return BadRequest();
-            }
-
-            await _petService.UpdatePetAsync(petDto);
+            await _petService.UpdatePetAsync(id, petDto);
 
             return NoContent();
         }

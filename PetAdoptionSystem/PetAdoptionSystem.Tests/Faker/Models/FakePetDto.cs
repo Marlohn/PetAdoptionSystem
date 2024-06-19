@@ -12,7 +12,7 @@ namespace PetAdoptionSystem.Tests.Faker.Models
         private static readonly string[] BirdBreeds = { "Parrot", "Canary", "Sparrow" };
         private static readonly string[] FishBreeds = { "Goldfish", "Betta", "Guppy" };
 
-        private static readonly Faker<PetDto> _faker = new Faker<PetDto>()
+        private static readonly Faker<PetResponseDto> _faker = new Faker<PetResponseDto>()
             .RuleFor(p => p.Id, f => Guid.NewGuid())
             .RuleFor(p => p.Type, f => f.PickRandom(new[] { "Dog", "Cat", "Bird", "Fish" }))
             .RuleFor(p => p.Sex, f => f.PickRandom(new[] { "Male", "Female" }))
@@ -35,12 +35,12 @@ namespace PetAdoptionSystem.Tests.Faker.Models
                 };
             });
 
-        public PetDto Generate()
+        public PetResponseDto Generate()
         {
             return _faker.Generate();
         }
 
-        public List<PetDto> Generate(int count)
+        public List<PetResponseDto> Generate(int count)
         {
             return _faker.Generate(count);
         }
