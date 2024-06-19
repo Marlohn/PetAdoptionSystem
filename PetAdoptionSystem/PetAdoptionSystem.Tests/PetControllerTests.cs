@@ -9,13 +9,13 @@ namespace PetAdoptionSystem.Tests
 {
     public class PetControllerTests
     {
-        private readonly PetController _petController;
+        private readonly PetsController _petController;
         private readonly Mock<IPetService> _petServiceMock;
 
         public PetControllerTests()
         {
             _petServiceMock = new Mock<IPetService>();
-            _petController = new PetController(_petServiceMock.Object);
+            _petController = new PetsController(_petServiceMock.Object);
         }
 
         [Fact]

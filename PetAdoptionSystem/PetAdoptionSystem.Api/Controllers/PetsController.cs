@@ -4,11 +4,13 @@ using PetAdoptionSystem.Application.Interfaces;
 
 namespace PetAdoptionSystem.Api.Controllers
 {
-    public class PetController : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class PetsController : Controller
     {
         private readonly IPetService _petService;
 
-        public PetController(IPetService petService)
+        public PetsController(IPetService petService)
         {
             _petService = petService;
         }
