@@ -23,7 +23,7 @@ As an administrator, I want to be able to manage the pet adoption system by addi
 - **PetAdoptionSystem.Infra**: Implements infrastructure-related code, such as data access repositories and external service integrations.
 - **PetAdoptionSystem.IoC**: Configures dependency injection containers to resolve dependencies throughout the system.
 - **PetAdoptionSystem.Tests**: Contains unit tests to ensure code quality and functionality.
-- **PetAdoptionSystem.Web**: Contains the web application (front-end) where users interact with the system, including views, controllers, scripts, and styles.
+- ~~**PetAdoptionSystem.Web**: Contains the web application (front-end) where users interact with the system, including views, controllers, scripts, and styles.~~
 
 ## Getting Started
 
