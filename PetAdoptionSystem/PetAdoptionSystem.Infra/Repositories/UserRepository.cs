@@ -16,7 +16,7 @@ namespace PetAdoptionSystem.Infra.Repositories
 
         public async Task<Guid> AddAsync(User user)
         {
-            const string query = "INSERT INTO Users (Username, Password) OUTPUT INSERTED.Id VALUES (@Username, @Password)";
+            const string query = "INSERT INTO Users (Username, Password, Role) OUTPUT INSERTED.Id VALUES (@Username, @Password, @Role)";
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -25,6 +25,7 @@ namespace PetAdoptionSystem.Infra.Repositories
                 {
                     command.Parameters.Add(new SqlParameter("@Username", SqlDbType.NVarChar, 50) { Value = user.Username });
                     command.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar, 50) { Value = user.Password });
+                    command.Parameters.Add(new SqlParameter("@Role", SqlDbType.NVarChar, 50) { Value = user.Role });
 
                     var result = await command.ExecuteScalarAsync();
                     if (result == null)
@@ -58,7 +59,8 @@ namespace PetAdoptionSystem.Infra.Repositories
                             {
                                 Id = reader.GetGuid(reader.GetOrdinal("Id")),
                                 Username = reader.GetString(reader.GetOrdinal("Username")),
-                                Password = reader.GetString(reader.GetOrdinal("Password"))
+                                Password = reader.GetString(reader.GetOrdinal("Password")),
+                                Role = reader.GetString(reader.GetOrdinal("Role"))
                             };
                         }
                     }
@@ -88,7 +90,8 @@ namespace PetAdoptionSystem.Infra.Repositories
                             {
                                 Id = reader.GetGuid(reader.GetOrdinal("Id")),
                                 Username = reader.GetString(reader.GetOrdinal("Username")),
-                                Password = reader.GetString(reader.GetOrdinal("Password"))
+                                Password = reader.GetString(reader.GetOrdinal("Password")),
+                                Role = reader.GetString(reader.GetOrdinal("Role"))
                             };
                         }
                     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PetAdoptionSystem.Application.Dtos;
 using PetAdoptionSystem.Application.Interfaces;
 
@@ -16,6 +17,7 @@ namespace PetAdoptionSystem.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllPets()
         {
             var pets = await _petService.GetAllPetsAsync();
@@ -24,6 +26,7 @@ namespace PetAdoptionSystem.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetPetById(Guid id)
         {
             var pet = await _petService.GetPetByIdAsync(id);
@@ -37,6 +40,7 @@ namespace PetAdoptionSystem.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "admin")]
         public async Task<IActionResult> CreatePet([FromBody] PetRequestDto petDto)
         {
             var createdPet = await _petService.AddPetAsync(petDto);
@@ -45,6 +49,7 @@ namespace PetAdoptionSystem.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "admin")]
         public async Task<IActionResult> UpdatePet(Guid id, [FromBody] PetRequestDto petDto)
         {
             var updatedPet = await _petService.UpdatePetAsync(id, petDto);
@@ -57,6 +62,7 @@ namespace PetAdoptionSystem.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "admin")]
         public async Task<IActionResult> DeletePet(Guid id)
         {
             var deleted = await _petService.DeletePetAsync(id);

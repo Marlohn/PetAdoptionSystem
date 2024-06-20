@@ -50,18 +50,5 @@ namespace PetAdoptionSystem.Api.Controllers
 
             return Ok(user);
         }
-
-        [HttpGet("public")]
-        public IActionResult PublicEndpoint()
-        {
-            return Ok("This is a public endpoint.");
-        }
-
-        [HttpGet("private")]
-        [Authorize]
-        public IActionResult PrivateEndpoint()
-        {
-            return Ok("This is a private endpoint.");
-        }
     }
 }

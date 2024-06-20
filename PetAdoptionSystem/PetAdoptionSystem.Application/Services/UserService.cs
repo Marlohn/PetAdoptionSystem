@@ -1,25 +1,34 @@
-﻿using PetAdoptionSystem.Application.Dtos;
+﻿using Microsoft.IdentityModel.Tokens;
+using PetAdoptionSystem.Application.Dtos;
 using PetAdoptionSystem.Application.Interfaces;
 using PetAdoptionSystem.Domain.Interfaces;
 using PetAdoptionSystem.Domain.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace PetAdoptionSystem.Application.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IJwtService _jwtService;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IJwtService jwtService)
         {
             _userRepository = userRepository;
+            _jwtService = jwtService;
         }
 
         public async Task<UserResponseDto> Register(UserRequestDto userDto)
         {
+            const string DefaultRole = "user";
+
             var user = new User()
             {
                 Username = userDto.Username,
-                Password = userDto.Password
+                Password = userDto.Password,
+                Role = DefaultRole
             };
 
             var id = await _userRepository.AddAsync(user);
@@ -27,6 +36,7 @@ namespace PetAdoptionSystem.Application.Services
             return new UserResponseDto()
             {
                 Id = id,
+                Role = DefaultRole,
                 Username = userDto.Username,
                 Password = userDto.Password
             };
@@ -45,7 +55,8 @@ namespace PetAdoptionSystem.Application.Services
             {
                 Id = user.Id,
                 Username = user.Username,
-                Password = user.Password
+                Password = user.Password,
+                Role = user.Role
             };
         }
 
@@ -58,10 +69,7 @@ namespace PetAdoptionSystem.Application.Services
                 return string.Empty;
             }
 
-            // Generate JWT token
-            return "generated-jwt-token"; // Replace with actual token generation logic
+            return _jwtService.GenerateToken(username, user.Role);
         }
-
-
     }
 }
