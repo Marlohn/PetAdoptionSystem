@@ -32,6 +32,7 @@ As an administrator, I want to be able to manage the pet adoption system by addi
 - .NET Core SDK
 - SQL Server or any other supported database
 - Visual Studio or any other compatible IDE
+- Install and run Docker Desktop
 
 ### Setting Up User-Secrets
 
