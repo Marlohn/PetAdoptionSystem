@@ -1,23 +1,12 @@
-﻿using Bogus;
-using PetAdoptionSystem.Domain.Models;
+﻿using PetAdoptionSystem.Domain.Models;
 
 namespace PetAdoptionSystem.Tests.Faker.Models
 {
-    public class FakeUser
+    public class FakeUser : BaseUserFake<User>
     {
-        private static readonly Faker<User> _faker = new Faker<User>()
-            .RuleFor(u => u.Id, f => Guid.NewGuid())
-            .RuleFor(u => u.Username, f => f.Internet.UserName())
-            .RuleFor(u => u.Password, (f, u) => f.Internet.Password());
-
-        public User Generate()
+        public FakeUser() : base()
         {
-            return _faker.Generate();
-        }
-
-        public List<User> Generate(int count)
-        {
-            return _faker.Generate(count);
+            Faker.RuleFor(p => p.Id, f => Guid.NewGuid());
         }
     }
 }

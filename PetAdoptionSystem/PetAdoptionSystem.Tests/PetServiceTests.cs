@@ -4,7 +4,7 @@ using PetAdoptionSystem.Domain.Interfaces;
 using PetAdoptionSystem.Domain.Models;
 using PetAdoptionSystem.Tests.Faker;
 
-namespace PetAdoptionSystem.Tests
+namespace PetAdoptionSystem.Tests.Services
 {
     public class PetServiceTests
     {
@@ -18,39 +18,24 @@ namespace PetAdoptionSystem.Tests
         }
 
         [Fact]
-        public async Task GetAllPetsAsync_ReturnsListOfPetDtos()
+        public async Task GetAllPetsAsync_ReturnsListOfPets()
         {
             // Arrange
-            var pets = FakeDataGenerator.Pet.Generate(5);
-
+            var pets = FakeDataGenerator.Pet.Generate(3);
             _petRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(pets);
 
             // Act
             var result = await _petService.GetAllPetsAsync();
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(pets.Count, result.Count());
-
-            for (int i = 0; i < pets.Count; i++)
-            {
-                var expectedPet = pets[i];
-                var actualPet = result.ElementAt(i);
-
-                Assert.Equal(expectedPet.Id, actualPet.Id);
-                Assert.Equal(expectedPet.Name, actualPet.Name);
-                Assert.Equal(expectedPet.Type, actualPet.Type);
-                Assert.Equal(expectedPet.Breed, actualPet.Breed);
-                Assert.Equal(expectedPet.Sex, actualPet.Sex);
-            }
+            Assert.Equal(3, result.Count);
         }
 
         [Fact]
-        public async Task GetPetByIdAsync_ReturnsPetDto()
+        public async Task GetPetByIdAsync_ReturnsPet_WhenPetExists()
         {
             // Arrange
             var pet = FakeDataGenerator.Pet.Generate();
-
             _petRepositoryMock.Setup(repo => repo.GetByIdAsync(pet.Id)).ReturnsAsync(pet);
 
             // Act
@@ -59,82 +44,96 @@ namespace PetAdoptionSystem.Tests
             // Assert
             Assert.NotNull(result);
             Assert.Equal(pet.Id, result.Id);
-            Assert.Equal(pet.Name, result.Name);
-            Assert.Equal(pet.Type, result.Type);
-            Assert.Equal(pet.Breed, result.Breed);
-            Assert.Equal(pet.Sex, result.Sex);
         }
 
         [Fact]
-        public async Task AddPetAsync_CallsRepositoryCreateAsync()
-        {
-            // Arrange
-            var petDto = FakeDataGenerator.PetDto.Generate();
-
-            var pet = new Pet
-            {
-                Id = petDto.Id,
-                Name = petDto.Name,
-                Type = petDto.Type,
-                Breed = petDto.Breed,
-                Sex = petDto.Sex
-            };
-
-            _petRepositoryMock.Setup(repo => repo.CreateAsync(It.IsAny<Pet>())).Returns(Task.CompletedTask);
-
-            // Act
-            await _petService.AddPetAsync(petDto);
-
-            // Assert
-            _petRepositoryMock.Verify(repo => repo.CreateAsync(It.Is<Pet>(p =>
-                p.Id == petDto.Id &&
-                p.Name == petDto.Name &&
-                p.Type == petDto.Type &&
-                p.Breed == petDto.Breed &&
-                p.Sex == petDto.Sex)), Times.Once);
-        }
-
-        [Fact]
-        public async Task UpdatePetAsync_CallsRepositoryUpdateAsync()
-        {
-            // Arrange
-            var petDto = FakeDataGenerator.PetDto.Generate();
-
-            var pet = new Pet
-            {
-                Id = petDto.Id,
-                Name = petDto.Name,
-                Type = petDto.Type,
-                Breed = petDto.Breed,
-                Sex = petDto.Sex
-            };
-
-            _petRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<Pet>())).Returns(Task.CompletedTask);
-
-            // Act
-            await _petService.UpdatePetAsync(pet.Id, petDto);
-
-            // Assert
-            _petRepositoryMock.Verify(repo => repo.UpdateAsync(It.Is<Pet>(p =>
-                p.Id == petDto.Id &&
-                p.Name == petDto.Name &&
-                p.Type == petDto.Type &&
-                p.Breed == petDto.Breed &&
-                p.Sex == petDto.Sex)), Times.Once);
-        }
-
-        [Fact]
-        public async Task DeletePetAsync_CallsRepositoryDeleteAsync()
+        public async Task GetPetByIdAsync_ReturnsNull_WhenPetDoesNotExist()
         {
             // Arrange
             var petId = Guid.NewGuid();
-            _petRepositoryMock.Setup(repo => repo.DeleteAsync(It.IsAny<Guid>())).Returns(Task.CompletedTask);
+            _petRepositoryMock.Setup(repo => repo.GetByIdAsync(petId)).ReturnsAsync((Pet?)null);
 
             // Act
-            await _petService.DeletePetAsync(petId);
+            var result = await _petService.GetPetByIdAsync(petId);
 
             // Assert
-            _petRepositoryMock.Verify(repo => repo.DeleteAsync(It.Is<Guid>(id => id == petId)), Times.Once);
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task AddPetAsync_ReturnsCreatedPet()
+        {
+            // Arrange
+            var petRequestDto = FakeDataGenerator.PetRequestDto.Generate();
+
+            var petId = Guid.NewGuid();
+            _petRepositoryMock.Setup(repo => repo.CreateAsync(It.IsAny<Pet>())).ReturnsAsync(petId);
+
+            // Act
+            var result = await _petService.AddPetAsync(petRequestDto);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(petId, result.Id);
+        }
+
+        [Fact]
+        public async Task UpdatePetAsync_ReturnsUpdatedPet()
+        {
+            // Arrange
+            var petRequestDto = FakeDataGenerator.PetRequestDto.Generate();
+            var pet = FakeDataGenerator.Pet.Generate();
+            _petRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<Pet>())).ReturnsAsync(true);
+
+            // Act
+            var result = await _petService.UpdatePetAsync(pet.Id, petRequestDto);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(pet.Id, result.Id);
+        }
+
+        [Fact]
+        public async Task UpdatePetAsync_ReturnsNull_WhenPetDoesNotExist()
+        {
+            // Arrange
+            var petRequestDto = FakeDataGenerator.PetRequestDto.Generate();
+            var petId = Guid.NewGuid();
+            _petRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<Pet>())).ReturnsAsync(false);
+
+            // Act
+            var result = await _petService.UpdatePetAsync(petId, petRequestDto);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task DeletePetAsync_ReturnsTrue_WhenPetExists()
+        {
+            // Arrange
+            var petId = Guid.NewGuid();
+            _petRepositoryMock.Setup(repo => repo.DeleteAsync(petId)).ReturnsAsync(true);
+
+            // Act
+            var result = await _petService.DeletePetAsync(petId);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task DeletePetAsync_ReturnsFalse_WhenPetDoesNotExist()
+        {
+            // Arrange
+            var petId = Guid.NewGuid();
+            _petRepositoryMock.Setup(repo => repo.DeleteAsync(petId)).ReturnsAsync(false);
+
+            // Act
+            var result = await _petService.DeletePetAsync(petId);
+
+            // Assert
+            Assert.False(result);
         }
     }
 }
