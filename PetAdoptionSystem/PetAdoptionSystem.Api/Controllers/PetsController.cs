@@ -5,7 +5,7 @@ using PetAdoptionSystem.Application.Interfaces;
 namespace PetAdoptionSystem.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class PetsController : Controller
     {
         private readonly IPetService _petService;

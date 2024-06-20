@@ -12,6 +12,9 @@ namespace PetAdoptionSystem.Infra.IoC
         {
             services.AddScoped<IPetService, PetService>();
             services.AddScoped<IPetRepository>(provider => new PetRepository(connectionString));
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository>(provider => new UserRepository(connectionString));
         }
     }
 }
