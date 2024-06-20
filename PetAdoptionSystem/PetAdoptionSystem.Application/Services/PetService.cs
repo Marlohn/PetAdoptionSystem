@@ -18,14 +18,7 @@ namespace PetAdoptionSystem.Application.Services
         {
             var pets = await _petRepository.GetAllAsync();
 
-            return pets.Select(p => new PetResponseDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Type = p.Type,
-                Breed = p.Breed,
-                Sex = p.Sex
-            }).ToList();
+            return pets.Select(PetResponseDto.Map).ToList();
         }
 
         public async Task<PetResponseDto?> GetPetByIdAsync(Guid id)
@@ -37,14 +30,7 @@ namespace PetAdoptionSystem.Application.Services
                 return null;
             }
 
-            return new PetResponseDto
-            {
-                Id = pet.Id,
-                Name = pet.Name,
-                Type = pet.Type,
-                Breed = pet.Breed,
-                Sex = pet.Sex
-            };
+            return PetResponseDto.Map(pet);
         }
 
         public async Task<PetResponseDto> AddPetAsync(PetRequestDto petDto)
@@ -57,16 +43,9 @@ namespace PetAdoptionSystem.Application.Services
                 Sex = petDto.Sex
             };
 
-            var id = await _petRepository.CreateAsync(pet);
+            pet.Id = await _petRepository.CreateAsync(pet);
 
-            return new PetResponseDto
-            {
-                Id = id,
-                Name = pet.Name,
-                Type = pet.Type,
-                Breed = pet.Breed,
-                Sex = pet.Sex
-            };
+            return PetResponseDto.Map(pet);
         }
 
         public async Task<PetResponseDto?> UpdatePetAsync(Guid id, PetRequestDto petDto)
@@ -86,14 +65,7 @@ namespace PetAdoptionSystem.Application.Services
                 return null;
             }
 
-            return new PetResponseDto
-            {
-                Id = pet.Id,
-                Name = pet.Name,
-                Type = pet.Type,
-                Breed = pet.Breed,
-                Sex = pet.Sex
-            };
+            return PetResponseDto.Map(pet);
         }
 
         public async Task<bool> DeletePetAsync(Guid id)
