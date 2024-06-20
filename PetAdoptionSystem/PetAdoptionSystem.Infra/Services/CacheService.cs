@@ -5,27 +5,31 @@ namespace PetAdoptionSystem.Infra.Services
 {
     public class CacheService : ICacheService
     {
-        private readonly IMemoryCache _memoryCache;
+        private readonly IMemoryCache _cache;
+        private const int CacheDurationMinutes = 10;
 
-        public CacheService(IMemoryCache memoryCache)
+        public CacheService(IMemoryCache cache)
         {
-            _memoryCache = memoryCache;
+            _cache = cache;
         }
 
-        public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> createItem, MemoryCacheEntryOptions options)
+        public T? Get<T>(string key)
         {
-            if (!_memoryCache.TryGetValue(cacheKey, out T cacheEntry))
+            return _cache.TryGetValue(key, out T? value) ? value : default;
+        }
+
+        public void Set<T>(string key, T value)
+        {
+            var cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                cacheEntry = await createItem();
-                _memoryCache.Set(cacheKey, cacheEntry, options);
-            }
-
-            return cacheEntry;
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheDurationMinutes)
+            };
+            _cache.Set(key, value, cacheEntryOptions);
         }
 
-        public void Remove(string cacheKey)
+        public void Remove(string key)
         {
-            _memoryCache.Remove(cacheKey);
+            _cache.Remove(key);
         }
     }
 }

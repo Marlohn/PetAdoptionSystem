@@ -1,10 +1,9 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-
-namespace PetAdoptionSystem.Domain.Interfaces
+﻿namespace PetAdoptionSystem.Domain.Interfaces
 {
     public interface ICacheService
     {
-        Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> createItem, MemoryCacheEntryOptions options);
-        void Remove(string cacheKey);
+        T? Get<T>(string key);
+        void Set<T>(string key, T value);
+        void Remove(string key);
     }
 }

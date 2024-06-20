@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PetAdoptionSystem.Application.Dtos;
 using PetAdoptionSystem.Application.Interfaces;
+using PetAdoptionSystem.Domain.Interfaces;
 
 namespace PetAdoptionSystem.Api.Controllers
 {
@@ -10,17 +11,27 @@ namespace PetAdoptionSystem.Api.Controllers
     public class PetsController : Controller
     {
         private readonly IPetService _petService;
+        private readonly ICacheService _cacheService;
+        private const string CacheKey = "GetPets";
 
-        public PetsController(IPetService petService)
+        public PetsController(IPetService petService, ICacheService cacheService)
         {
             _petService = petService;
+            _cacheService = cacheService;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAllPets()
         {
+            var cachedPets = _cacheService.Get<IEnumerable<PetResponseDto>>(CacheKey);
+            if (cachedPets != null)
+            {
+                return Ok(cachedPets);
+            }
+
             var pets = await _petService.GetAllPetsAsync();
+            _cacheService.Set(CacheKey, pets);
 
             return Ok(pets);
         }
@@ -44,6 +55,7 @@ namespace PetAdoptionSystem.Api.Controllers
         public async Task<IActionResult> CreatePet([FromBody] PetRequestDto petDto)
         {
             var createdPet = await _petService.AddPetAsync(petDto);
+            _cacheService.Remove(CacheKey);
 
             return CreatedAtAction(nameof(GetPetById), new { id = createdPet.Id }, createdPet);
         }
@@ -58,6 +70,7 @@ namespace PetAdoptionSystem.Api.Controllers
                 return NotFound();
             }
 
+            _cacheService.Remove(CacheKey);
             return Ok(updatedPet);
         }
 
@@ -71,6 +84,7 @@ namespace PetAdoptionSystem.Api.Controllers
                 return NotFound();
             }
 
+            _cacheService.Remove(CacheKey);
             return NoContent();
         }
     }
