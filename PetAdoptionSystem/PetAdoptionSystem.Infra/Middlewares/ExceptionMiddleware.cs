@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Net;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using PetAdoptionSystem.Infra.Middlewares.Models;
-using System.Net;
 
 namespace PetAdoptionSystem.Infra.Middlewares
 {
@@ -37,7 +37,7 @@ namespace PetAdoptionSystem.Infra.Middlewares
             return context.Response.WriteAsync(new ErrorDetails()
             {
                 StatusCode = context.Response.StatusCode,
-                Message = "Internal Server Error."
+                Message = $"Internal Server Error: {exception.Message}"
             }.ToString());
         }
     }

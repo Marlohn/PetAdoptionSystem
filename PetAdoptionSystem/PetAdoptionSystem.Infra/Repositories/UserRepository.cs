@@ -1,104 +1,60 @@
-﻿using PetAdoptionSystem.Domain.Interfaces;
-using PetAdoptionSystem.Domain.Models;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
+using PetAdoptionSystem.Domain.Interfaces;
+using PetAdoptionSystem.Domain.Models;
 
 namespace PetAdoptionSystem.Infra.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly string _connectionString;
+        private readonly IDatabaseExecutor _databaseExecutor;
 
-        public UserRepository(string connectionString)
+        public UserRepository(IDatabaseExecutor databaseExecutor)
         {
-            _connectionString = connectionString;
+            _databaseExecutor = databaseExecutor;
         }
 
         public async Task<Guid> AddAsync(User user)
         {
             const string query = "INSERT INTO Users (Username, Password, Role) OUTPUT INSERTED.Id VALUES (@Username, @Password, @Role)";
-
-            using (var connection = new SqlConnection(_connectionString))
+            var parameters = new[]
             {
-                await connection.OpenAsync();
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("@Username", SqlDbType.NVarChar, 50) { Value = user.Username });
-                    command.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar, 50) { Value = user.Password });
-                    command.Parameters.Add(new SqlParameter("@Role", SqlDbType.NVarChar, 50) { Value = user.Role });
+                new SqlParameter("@Username", SqlDbType.NVarChar, 50) { Value = user.Username },
+                new SqlParameter("@Password", SqlDbType.NVarChar, 50) { Value = user.Password },
+                new SqlParameter("@Role", SqlDbType.NVarChar, 50) { Value = user.Role }
+            };
 
-                    var result = await command.ExecuteScalarAsync();
-                    if (result == null)
-                    {
-                        throw new Exception("Failed to insert the user and retrieve the ID.");
-                    }
-
-                    return (Guid)result;
-                }
+            var result = await _databaseExecutor.ExecuteScalarAsync<Guid>(query, parameters);
+            if (result == Guid.Empty)
+            {
+                throw new Exception("Failed to insert the user and retrieve the ID.");
             }
+            return result;
         }
 
         public async Task<User?> GetByUsernameAndPasswordAsync(string username, string password)
         {
-            User? user = null;
             const string query = "SELECT * FROM Users WHERE Username = @Username AND Password = @Password";
-
-            using (var connection = new SqlConnection(_connectionString))
+            var parameters = new[]
             {
-                await connection.OpenAsync();
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("@Username", SqlDbType.NVarChar, 50) { Value = username });
-                    command.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar, 50) { Value = password });
+                new SqlParameter("@Username", SqlDbType.NVarChar, 50) { Value = username },
+                new SqlParameter("@Password", SqlDbType.NVarChar, 50) { Value = password }
+            };
 
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            user = new User
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Username = reader.GetString(reader.GetOrdinal("Username")),
-                                Password = reader.GetString(reader.GetOrdinal("Password")),
-                                Role = reader.GetString(reader.GetOrdinal("Role"))
-                            };
-                        }
-                    }
-                }
-            }
-
-            return user;
+            var result = await _databaseExecutor.ExecuteQueryAsync<User>(query, parameters);
+            return result.FirstOrDefault();
         }
 
         public async Task<User?> GetByIdAsync(Guid id)
         {
-            User? user = null;
             const string query = "SELECT * FROM Users WHERE Id = @Id";
-
-            using (var connection = new SqlConnection(_connectionString))
+            var parameters = new[]
             {
-                await connection.OpenAsync();
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
+                new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id }
+            };
 
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            user = new User
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Username = reader.GetString(reader.GetOrdinal("Username")),
-                                Password = reader.GetString(reader.GetOrdinal("Password")),
-                                Role = reader.GetString(reader.GetOrdinal("Role"))
-                            };
-                        }
-                    }
-                }
-            }
-
-            return user;
+            var result = await _databaseExecutor.ExecuteQueryAsync<User>(query, parameters);
+            return result.FirstOrDefault();
         }
     }
 }

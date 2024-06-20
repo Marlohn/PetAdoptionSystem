@@ -12,10 +12,12 @@ namespace PetAdoptionSystem.IoC.Extensions
         public static void AddProjectDependencies(this IServiceCollection services, string connectionString)
         {
             services.AddScoped<IPetService, PetService>();
-            services.AddScoped<IPetRepository>(provider => new PetRepository(connectionString));
-
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IUserRepository>(provider => new UserRepository(connectionString));
+
+            services.AddScoped<IPetRepository, PetRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IDatabaseExecutor>(provider => new DatabaseExecutor(connectionString));
         }
 
         public static void AddJwtDependencies(this IServiceCollection services)
