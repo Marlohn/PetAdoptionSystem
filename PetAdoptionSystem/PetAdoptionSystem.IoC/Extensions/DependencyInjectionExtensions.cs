@@ -5,7 +5,7 @@ using PetAdoptionSystem.Domain.Interfaces;
 using PetAdoptionSystem.Infra.Repositories;
 using PetAdoptionSystem.Infra.Services;
 
-namespace PetAdoptionSystem.Infra.IoC
+namespace PetAdoptionSystem.IoC.Extensions
 {
     public static class DependencyInjectionExtensions
     {
