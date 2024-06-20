@@ -24,7 +24,7 @@ namespace PetAdoptionSystem.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllPets()
         {
-            var cachedPets = _cacheService.Get<IEnumerable<PetResponseDto>>(CacheKey);
+            var cachedPets = _cacheService.Get<List<PetResponseDto>>(CacheKey);
             if (cachedPets != null)
             {
                 return Ok(cachedPets);
