@@ -52,7 +52,7 @@ To securely store sensitive information such as passwords, you can use .NET Core
 4. Replace Xm4Q9VCUBnaA9CwAdrh5JP with your actual SQL password.
 
 
-### Run project
+### Run ASPIRE
 1. Set up as start up project `PetAdoptionSystem.AppHost`
 2. Run it!
 
