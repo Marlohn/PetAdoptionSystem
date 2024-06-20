@@ -39,23 +39,31 @@ namespace PetAdoptionSystem.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePet([FromBody] PetRequestDto petDto)
         {
-            await _petService.AddPetAsync(petDto);
+            var createdPet = await _petService.AddPetAsync(petDto);
 
-            return Created();
+            return CreatedAtAction(nameof(GetPetById), new { id = createdPet.Id }, createdPet);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePet(Guid id, [FromBody] PetRequestDto petDto)
         {
-            await _petService.UpdatePetAsync(id, petDto);
+            var updatedPet = await _petService.UpdatePetAsync(id, petDto);
+            if (updatedPet == null)
+            {
+                return NotFound();
+            }
 
-            return NoContent();
+            return Ok(updatedPet);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePet(Guid id)
         {
-            await _petService.DeletePetAsync(id);
+            var deleted = await _petService.DeletePetAsync(id);
+            if (!deleted)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }

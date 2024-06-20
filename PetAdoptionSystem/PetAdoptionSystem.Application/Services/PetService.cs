@@ -47,7 +47,7 @@ namespace PetAdoptionSystem.Application.Services
             };
         }
 
-        public async Task AddPetAsync(PetRequestDto petDto)
+        public async Task<PetResponseDto> AddPetAsync(PetRequestDto petDto)
         {
             var pet = new Pet
             {
@@ -57,10 +57,19 @@ namespace PetAdoptionSystem.Application.Services
                 Sex = petDto.Sex
             };
 
-            await _petRepository.CreateAsync(pet);
+            var id = await _petRepository.CreateAsync(pet);
+
+            return new PetResponseDto
+            {
+                Id = id,
+                Name = pet.Name,
+                Type = pet.Type,
+                Breed = pet.Breed,
+                Sex = pet.Sex
+            };
         }
 
-        public async Task UpdatePetAsync(Guid id, PetRequestDto petDto)
+        public async Task<PetResponseDto?> UpdatePetAsync(Guid id, PetRequestDto petDto)
         {
             var pet = new Pet
             {
@@ -71,12 +80,25 @@ namespace PetAdoptionSystem.Application.Services
                 Sex = petDto.Sex
             };
 
-            await _petRepository.UpdateAsync(pet);
+            var updated = await _petRepository.UpdateAsync(pet);
+            if (!updated)
+            {
+                return null;
+            }
+
+            return new PetResponseDto
+            {
+                Id = pet.Id,
+                Name = pet.Name,
+                Type = pet.Type,
+                Breed = pet.Breed,
+                Sex = pet.Sex
+            };
         }
 
-        public async Task DeletePetAsync(Guid id)
+        public async Task<bool> DeletePetAsync(Guid id)
         {
-            await _petRepository.DeleteAsync(id);
+            return await _petRepository.DeleteAsync(id);
         }
     }
 }

@@ -6,8 +6,8 @@ namespace PetAdoptionSystem.Domain.Interfaces
     {
         Task<List<Pet>> GetAllAsync();
         Task<Pet?> GetByIdAsync(Guid id);
-        Task CreateAsync(Pet pet);
-        Task DeleteAsync(Guid id);
-        Task UpdateAsync(Pet pet);
+        Task<Guid> CreateAsync(Pet pet);
+        Task<bool> DeleteAsync(Guid id);
+        Task<bool> UpdateAsync(Pet pet);
     }
 }

@@ -75,9 +75,12 @@ namespace PetAdoptionSystem.Infra.Repositories
             return pet;
         }
 
-        public async Task CreateAsync(Pet pet)
+        public async Task<Guid> CreateAsync(Pet pet)
         {
-            const string query = "INSERT INTO Pets (Name, Type, Breed, Sex) VALUES (@Name, @Type, @Breed, @Sex)";
+            const string query = @"
+                INSERT INTO Pets (Name, Type, Breed, Sex)
+                OUTPUT INSERTED.Id
+                VALUES (@Name, @Type, @Breed, @Sex)";
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -88,12 +91,20 @@ namespace PetAdoptionSystem.Infra.Repositories
                     command.Parameters.Add(new SqlParameter("@Type", SqlDbType.NVarChar, 50) { Value = pet.Type });
                     command.Parameters.Add(new SqlParameter("@Breed", SqlDbType.NVarChar, 50) { Value = pet.Breed });
                     command.Parameters.Add(new SqlParameter("@Sex", SqlDbType.NVarChar, 10) { Value = pet.Sex });
-                    await command.ExecuteNonQueryAsync();
+
+                    var result = await command.ExecuteScalarAsync();
+
+                    if (result == null || !(result is Guid))
+                    {
+                        throw new Exception("Failed to insert the pet and retrieve the ID.");
+                    }
+
+                    return (Guid)result;
                 }
             }
         }
 
-        public async Task UpdateAsync(Pet pet)
+        public async Task<bool> UpdateAsync(Pet pet)
         {
             const string query = "UPDATE Pets SET Name = @Name, Type = @Type, Breed = @Breed, Sex = @Sex WHERE Id = @Id";
 
@@ -107,12 +118,14 @@ namespace PetAdoptionSystem.Infra.Repositories
                     command.Parameters.Add(new SqlParameter("@Type", SqlDbType.NVarChar, 50) { Value = pet.Type });
                     command.Parameters.Add(new SqlParameter("@Breed", SqlDbType.NVarChar, 50) { Value = pet.Breed });
                     command.Parameters.Add(new SqlParameter("@Sex", SqlDbType.NVarChar, 10) { Value = pet.Sex });
-                    await command.ExecuteNonQueryAsync();
+
+                    var rowsAffected = await command.ExecuteNonQueryAsync();
+                    return rowsAffected > 0;
                 }
             }
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             const string query = "DELETE FROM Pets WHERE Id = @Id";
 
@@ -122,7 +135,9 @@ namespace PetAdoptionSystem.Infra.Repositories
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
-                    await command.ExecuteNonQueryAsync();
+                    
+                    var rowsAffected = await command.ExecuteNonQueryAsync();
+                    return rowsAffected > 0;
                 }
             }
         }
