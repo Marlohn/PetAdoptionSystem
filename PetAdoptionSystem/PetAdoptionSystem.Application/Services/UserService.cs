@@ -53,7 +53,7 @@ namespace PetAdoptionSystem.Application.Services
                 return string.Empty;
             }
 
-            return _jwtService.GenerateToken(username, user.Role);
+            return _jwtService.GenerateToken(user.Id, user.Username, user.Role);
         }
     }
 }
