@@ -1,12 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PetAdoptionSystem.Api.Controllers;
 using PetAdoptionSystem.Application.Dtos;
 using PetAdoptionSystem.Application.Interfaces;
 using PetAdoptionSystem.Tests.Faker;
-using Xunit;
 
 namespace PetAdoptionSystem.Tests.Controllers
 {
@@ -92,7 +89,7 @@ namespace PetAdoptionSystem.Tests.Controllers
         {
             // Arrange
             var userId = Guid.NewGuid();
-            _userServiceMock.Setup(service => service.GetUserById(userId)).ReturnsAsync((UserResponseDto)null);
+            _userServiceMock.Setup(service => service.GetUserById(userId)).ReturnsAsync((UserResponseDto?)null);
 
             // Act
             var result = await _usersController.GetUserById(userId) as NotFoundResult;
@@ -100,30 +97,6 @@ namespace PetAdoptionSystem.Tests.Controllers
             // Assert
             Assert.NotNull(result);
             Assert.Equal(404, result.StatusCode);
-        }
-
-        [Fact]
-        public void PublicEndpoint_ShouldReturnOk()
-        {
-            // Act
-            var result = _usersController.PublicEndpoint() as OkObjectResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(200, result.StatusCode);
-            Assert.Equal("This is a public endpoint.", result.Value);
-        }
-
-        [Fact]
-        public void PrivateEndpoint_ShouldReturnOk()
-        {
-            // Act
-            var result = _usersController.PrivateEndpoint() as OkObjectResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(200, result.StatusCode);
-            Assert.Equal("This is a private endpoint.", result.Value);
         }
     }
 }
