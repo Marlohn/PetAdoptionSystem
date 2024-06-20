@@ -1,11 +1,7 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using PetAdoptionSystem.Application.Dtos;
+﻿using PetAdoptionSystem.Application.Dtos;
 using PetAdoptionSystem.Application.Interfaces;
 using PetAdoptionSystem.Domain.Interfaces;
 using PetAdoptionSystem.Domain.Models;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace PetAdoptionSystem.Application.Services
 {
@@ -31,15 +27,9 @@ namespace PetAdoptionSystem.Application.Services
                 Role = DefaultRole
             };
 
-            var id = await _userRepository.AddAsync(user);
+            user.Id = await _userRepository.AddAsync(user);
 
-            return new UserResponseDto()
-            {
-                Id = id,
-                Role = DefaultRole,
-                Username = userDto.Username,
-                Password = userDto.Password
-            };
+            return UserResponseDto.Map(user);
         }
 
         public async Task<UserResponseDto?> GetUserById(Guid id)
@@ -51,13 +41,7 @@ namespace PetAdoptionSystem.Application.Services
                 return null;
             }
 
-            return new UserResponseDto()
-            {
-                Id = user.Id,
-                Username = user.Username,
-                Password = user.Password,
-                Role = user.Role
-            };
+            return UserResponseDto.Map(user);
         }
 
         public async Task<string> Login(string username, string password)

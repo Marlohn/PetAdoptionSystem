@@ -6,8 +6,8 @@ namespace PetAdoptionSystem.Application.Interfaces
     {
         Task<List<PetResponseDto>> GetAllPetsAsync();
         Task<PetResponseDto?> GetPetByIdAsync(Guid id);
-        Task <PetResponseDto> AddPetAsync(PetRequestDto petDto);
-        Task <PetResponseDto?> UpdatePetAsync(Guid id, PetRequestDto petDto);
+        Task<PetResponseDto> AddPetAsync(PetRequestDto petDto);
+        Task<PetResponseDto?> UpdatePetAsync(Guid id, PetRequestDto petDto);
         Task<bool> DeletePetAsync(Guid id);
     }
 }

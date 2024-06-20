@@ -1,78 +1,38 @@
-﻿using PetAdoptionSystem.Domain.Interfaces;
-using PetAdoptionSystem.Domain.Models;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
+using PetAdoptionSystem.Domain.Interfaces;
+using PetAdoptionSystem.Domain.Models;
 
 namespace PetAdoptionSystem.Infra.Repositories
 {
     public class PetRepository : IPetRepository
     {
-        private readonly string _connectionString;
+        private readonly IDatabaseExecutorService _databaseExecutor;
 
-        public PetRepository(string connectionString)
+        public PetRepository(IDatabaseExecutorService databaseExecutor)
         {
-            _connectionString = connectionString;
+            _databaseExecutor = databaseExecutor;
         }
 
         public async Task<List<Pet>> GetAllAsync()
         {
-            var pets = new List<Pet>();
             const string query = "SELECT * FROM Pets";
 
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                using (var command = new SqlCommand(query, connection))
-                {
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            pets.Add(new Pet
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                Type = reader.GetString(reader.GetOrdinal("Type")),
-                                Breed = reader.GetString(reader.GetOrdinal("Breed")),
-                                Sex = reader.GetString(reader.GetOrdinal("Sex"))
-                            });
-                        }
-                    }
-                }
-            }
-
-            return pets;
+            return await _databaseExecutor.ExecuteQueryAsync<Pet>(query);
         }
 
         public async Task<Pet?> GetByIdAsync(Guid id)
         {
-            Pet? pet = null;
             const string query = "SELECT * FROM Pets WHERE Id = @Id";
 
-            using (var connection = new SqlConnection(_connectionString))
+            var parameters = new[]
             {
-                await connection.OpenAsync();
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            pet = new Pet
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                Type = reader.GetString(reader.GetOrdinal("Type")),
-                                Breed = reader.GetString(reader.GetOrdinal("Breed")),
-                                Sex = reader.GetString(reader.GetOrdinal("Sex"))
-                            };
-                        }
-                    }
-                }
-            }
+                new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id }
+            };
 
-            return pet;
+            var result = await _databaseExecutor.ExecuteQueryAsync<Pet>(query, parameters);
+
+            return result.FirstOrDefault();
         }
 
         public async Task<Guid> CreateAsync(Pet pet)
@@ -82,64 +42,54 @@ namespace PetAdoptionSystem.Infra.Repositories
                 OUTPUT INSERTED.Id
                 VALUES (@Name, @Type, @Breed, @Sex)";
 
-            using (var connection = new SqlConnection(_connectionString))
+            var parameters = new[]
             {
-                await connection.OpenAsync();
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar, 50) { Value = pet.Name });
-                    command.Parameters.Add(new SqlParameter("@Type", SqlDbType.NVarChar, 50) { Value = pet.Type });
-                    command.Parameters.Add(new SqlParameter("@Breed", SqlDbType.NVarChar, 50) { Value = pet.Breed });
-                    command.Parameters.Add(new SqlParameter("@Sex", SqlDbType.NVarChar, 10) { Value = pet.Sex });
+                new SqlParameter("@Name", SqlDbType.NVarChar, 50) { Value = pet.Name },
+                new SqlParameter("@Type", SqlDbType.NVarChar, 50) { Value = pet.Type },
+                new SqlParameter("@Breed", SqlDbType.NVarChar, 50) { Value = pet.Breed },
+                new SqlParameter("@Sex", SqlDbType.NVarChar, 10) { Value = pet.Sex }
+            };
 
-                    var result = await command.ExecuteScalarAsync();
+            var result = await _databaseExecutor.ExecuteScalarAsync<Guid>(query, parameters);
 
-                    if (result == null || !(result is Guid))
-                    {
-                        throw new Exception("Failed to insert the pet and retrieve the ID.");
-                    }
-
-                    return (Guid)result;
-                }
+            if (result == Guid.Empty)
+            {
+                throw new Exception("Failed to insert the pet and retrieve the ID.");
             }
+
+            return result;
         }
 
         public async Task<bool> UpdateAsync(Pet pet)
         {
             const string query = "UPDATE Pets SET Name = @Name, Type = @Type, Breed = @Breed, Sex = @Sex WHERE Id = @Id";
 
-            using (var connection = new SqlConnection(_connectionString))
+            var parameters = new[]
             {
-                await connection.OpenAsync();
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = pet.Id });
-                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar, 50) { Value = pet.Name });
-                    command.Parameters.Add(new SqlParameter("@Type", SqlDbType.NVarChar, 50) { Value = pet.Type });
-                    command.Parameters.Add(new SqlParameter("@Breed", SqlDbType.NVarChar, 50) { Value = pet.Breed });
-                    command.Parameters.Add(new SqlParameter("@Sex", SqlDbType.NVarChar, 10) { Value = pet.Sex });
+                new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = pet.Id },
+                new SqlParameter("@Name", SqlDbType.NVarChar, 50) { Value = pet.Name },
+                new SqlParameter("@Type", SqlDbType.NVarChar, 50) { Value = pet.Type },
+                new SqlParameter("@Breed", SqlDbType.NVarChar, 50) { Value = pet.Breed },
+                new SqlParameter("@Sex", SqlDbType.NVarChar, 10) { Value = pet.Sex }
+            };
 
-                    var rowsAffected = await command.ExecuteNonQueryAsync();
-                    return rowsAffected > 0;
-                }
-            }
+            var rowsAffected = await _databaseExecutor.ExecuteNonQueryAsync(query, parameters);
+
+            return rowsAffected > 0;
         }
 
         public async Task<bool> DeleteAsync(Guid id)
         {
             const string query = "DELETE FROM Pets WHERE Id = @Id";
 
-            using (var connection = new SqlConnection(_connectionString))
+            var parameters = new[]
             {
-                await connection.OpenAsync();
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
-                    
-                    var rowsAffected = await command.ExecuteNonQueryAsync();
-                    return rowsAffected > 0;
-                }
-            }
+                new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id }
+            };
+
+            var rowsAffected = await _databaseExecutor.ExecuteNonQueryAsync(query, parameters);
+
+            return rowsAffected > 0;
         }
     }
 }

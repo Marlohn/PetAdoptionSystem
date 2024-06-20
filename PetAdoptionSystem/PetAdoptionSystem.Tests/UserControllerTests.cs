@@ -5,7 +5,7 @@ using PetAdoptionSystem.Application.Dtos;
 using PetAdoptionSystem.Application.Interfaces;
 using PetAdoptionSystem.Tests.Faker;
 
-namespace PetAdoptionSystem.Tests.Controllers
+namespace PetAdoptionSystem.Tests
 {
     public class UsersControllerTests
     {

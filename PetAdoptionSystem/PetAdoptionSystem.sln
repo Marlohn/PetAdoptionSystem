@@ -38,9 +38,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetAdoptionSystem.IoC", "Pe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{37009D12-B3E0-4FE7-863E-DD46209F3F50}"
 	ProjectSection(SolutionItems) = preProject
-		CreatePetsTable.sql = CreatePetsTable.sql
-		CreateUsersTable.sql = CreateUsersTable.sql
-		InsertDemoData.sql = InsertDemoData.sql
+		Database\CreatePetsTable.sql = Database\CreatePetsTable.sql
+		Database\CreateUsersTable.sql = Database\CreateUsersTable.sql
+		Database\InsertDemoData.sql = Database\InsertDemoData.sql
 	EndProjectSection
 EndProject
 Global
