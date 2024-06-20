@@ -7,9 +7,9 @@ namespace PetAdoptionSystem.Infra.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly IDatabaseExecutor _databaseExecutor;
+        private readonly IDatabaseExecutorService _databaseExecutor;
 
-        public UserRepository(IDatabaseExecutor databaseExecutor)
+        public UserRepository(IDatabaseExecutorService databaseExecutor)
         {
             _databaseExecutor = databaseExecutor;
         }

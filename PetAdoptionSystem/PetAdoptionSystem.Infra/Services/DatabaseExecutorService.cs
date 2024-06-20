@@ -1,18 +1,12 @@
 ﻿using System.Data.SqlClient;
 using System.Reflection;
+using PetAdoptionSystem.Domain.Interfaces;
 
-public interface IDatabaseExecutor
-{
-    Task<T?> ExecuteScalarAsync<T>(string query, SqlParameter[]? parameters = null);
-    Task<int> ExecuteNonQueryAsync(string query, SqlParameter[]? parameters = null);
-    Task<List<T>> ExecuteQueryAsync<T>(string query, SqlParameter[]? parameters = null) where T : new();
-}
-
-public class DatabaseExecutor : IDatabaseExecutor
+public class DatabaseExecutorService : IDatabaseExecutorService
 {
     private readonly string _connectionString;
 
-    public DatabaseExecutor(string connectionString)
+    public DatabaseExecutorService(string connectionString)
     {
         _connectionString = connectionString;
     }

@@ -9,7 +9,7 @@ namespace PetAdoptionSystem.IoC.Extensions
 {
     public static class DependencyInjectionExtensions
     {
-        public static void AddProjectDependencies(this IServiceCollection services, string connectionString)
+        public static void AddProjectDependencies(this IServiceCollection services)
         {
             services.AddScoped<IPetService, PetService>();
             services.AddScoped<IUserService, UserService>();
@@ -17,12 +17,22 @@ namespace PetAdoptionSystem.IoC.Extensions
             services.AddScoped<IPetRepository, PetRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
 
-            services.AddScoped<IDatabaseExecutor>(provider => new DatabaseExecutor(connectionString));
         }
 
         public static void AddJwtDependencies(this IServiceCollection services)
         {
             services.AddScoped<IJwtService, JwtService>();
+        }
+
+        public static void AddCacheDependencies(this IServiceCollection services)
+        {
+            services.AddMemoryCache();
+            services.AddScoped<ICacheService, CacheService>();
+        }
+
+        public static void AddDatabaseExecutorDependencies(this IServiceCollection services, string connectionString)
+        {
+            services.AddScoped<IDatabaseExecutorService>(provider => new DatabaseExecutorService(connectionString));
         }
     }
 }

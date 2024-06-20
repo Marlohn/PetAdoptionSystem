@@ -1,5 +1,6 @@
 ﻿using System.Data.SqlClient;
 using Moq;
+using PetAdoptionSystem.Domain.Interfaces;
 using PetAdoptionSystem.Domain.Models;
 using PetAdoptionSystem.Infra.Repositories;
 using PetAdoptionSystem.Tests.Faker;
@@ -8,12 +9,12 @@ namespace PetAdoptionSystem.Tests
 {
     public class PetRepositoryTests
     {
-        private readonly Mock<IDatabaseExecutor> _mockDatabaseExecutor;
+        private readonly Mock<IDatabaseExecutorService> _mockDatabaseExecutor;
         private readonly PetRepository _repository;
 
         public PetRepositoryTests()
         {
-            _mockDatabaseExecutor = new Mock<IDatabaseExecutor>();
+            _mockDatabaseExecutor = new Mock<IDatabaseExecutorService>();
             _repository = new PetRepository(_mockDatabaseExecutor.Object);
         }
 

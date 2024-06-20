@@ -17,8 +17,11 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         string dbConnectionString = builder.Configuration.GetConnectionString("marlohnDb") ?? string.Empty; // Fix it
-        builder.Services.AddProjectDependencies(dbConnectionString);
+        builder.Services.AddProjectDependencies();
         builder.Services.AddJwtDependencies();
+        builder.Services.AddDatabaseExecutorDependencies(dbConnectionString);
+        builder.Services.AddCacheDependencies();
+
 
         builder.Services.AddCustomAuthentication(builder.Configuration);
         builder.Services.AddCustomAuthorization();
