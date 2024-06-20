@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetAdoptionSystem.Application.Dtos;
 using PetAdoptionSystem.Application.Interfaces;
@@ -37,11 +38,17 @@ namespace PetAdoptionSystem.Api.Controllers
             return Ok(token);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("profile")]
         [Authorize]
-        public async Task<IActionResult> GetUserById(Guid id)
+        public async Task<IActionResult> GetUserById()
         {
-            var user = await _userService.GetUserById(id);
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized();
+            }
+
+            var user = await _userService.GetUserById(userId);
 
             if (user == null)
             {

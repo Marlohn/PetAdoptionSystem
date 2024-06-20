@@ -9,14 +9,12 @@ var sql = builder
     .WithDataVolume("AppHost-MSSQL-data")
     .AddDatabase("marlohnDb");
 
-var apiService = builder.AddProject<Projects.PetAdoptionSystem_ApiService>("apiservice");
-
 var api = builder.AddProject<Projects.PetAdoptionSystem_Api>("api")
     .WithReference(sql)
     .WithEnvironment("ConnectionStrings:marlohnDb", builder.Configuration.GetConnectionString("marlohnDb"));
 
 builder.AddProject<Projects.PetAdoptionSystem_Web>("webfrontend")
     .WithExternalHttpEndpoints()
-    .WithReference(apiService);
+    .WithReference(api);
 
 builder.Build().Run();

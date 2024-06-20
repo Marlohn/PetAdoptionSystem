@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PetAdoptionSystem.Api.Controllers;
 using PetAdoptionSystem.Application.Dtos;
@@ -31,7 +33,10 @@ namespace PetAdoptionSystem.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("GetUserById", result.ActionName);
+            Assert.Equal(nameof(UsersController.GetUserById), result.ActionName);
+            Assert.NotNull(result.RouteValues);
+            Assert.True(result.RouteValues.ContainsKey("id"));
+            Assert.Equal(createdUserDto.Id, result.RouteValues["id"]);
             Assert.Equal(createdUserDto, result.Value);
         }
 
@@ -73,10 +78,20 @@ namespace PetAdoptionSystem.Tests
             // Arrange
             var userId = Guid.NewGuid();
             var userDto = FakeDataGenerator.UserResponseDto.Generate();
-            _userServiceMock.Setup(service => service.GetUserById(userId)).ReturnsAsync(userDto);
+            _userServiceMock.Setup(service => service.GetUserById(It.IsAny<Guid>())).ReturnsAsync(userDto);
+
+            var userClaims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+            }, "mock"));
+
+            _usersController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = userClaims }
+            };
 
             // Act
-            var result = await _usersController.GetUserById(userId) as OkObjectResult;
+            var result = await _usersController.GetUserById() as OkObjectResult;
 
             // Assert
             Assert.NotNull(result);
@@ -89,10 +104,20 @@ namespace PetAdoptionSystem.Tests
         {
             // Arrange
             var userId = Guid.NewGuid();
-            _userServiceMock.Setup(service => service.GetUserById(userId)).ReturnsAsync((UserResponseDto?)null);
+            _userServiceMock.Setup(service => service.GetUserById(It.IsAny<Guid>())).ReturnsAsync((UserResponseDto?)null);
+
+            var userClaims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+            }, "mock"));
+
+            _usersController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = userClaims }
+            };
 
             // Act
-            var result = await _usersController.GetUserById(userId) as NotFoundResult;
+            var result = await _usersController.GetUserById() as NotFoundResult;
 
             // Assert
             Assert.NotNull(result);

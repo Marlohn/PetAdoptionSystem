@@ -15,4 +15,4 @@ INSERT INTO Pets (Name, Type, Breed, Sex) VALUES
     
     SELECT * FROM Users
 
-    UPDATE Users SET Role = 'admin' WHERE id = '59798E00-AB96-4869-8E50-7FA70D7705FF'
+    UPDATE Users SET Role = 'admin' WHERE id = '27e009fb-0e5e-4283-b08a-a93aa6f14b80'

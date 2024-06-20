@@ -16,11 +16,12 @@ namespace PetAdoptionSystem.Infra.Services
             _configuration = configuration;
         }
 
-        public string GenerateToken(string username, string role)
+        public string GenerateToken(Guid id, string username, string role)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.NameIdentifier, id.ToString()),
+                new Claim(ClaimTypes.Name, username),                
                 new Claim(ClaimTypes.Role, role)
             };
 

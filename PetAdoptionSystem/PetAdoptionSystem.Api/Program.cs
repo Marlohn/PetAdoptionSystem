@@ -16,7 +16,9 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        string dbConnectionString = builder.Configuration.GetConnectionString("marlohnDb") ?? string.Empty; // Fix it
+        string dbConnectionString = builder.Configuration.GetConnectionString("marlohnDb") ??
+            throw new InvalidOperationException("The connectionstring is not configured properly in the configuration file.");
+
         builder.Services.AddProjectDependencies();
         builder.Services.AddJwtDependencies();
         builder.Services.AddDatabaseExecutorDependencies(dbConnectionString);
