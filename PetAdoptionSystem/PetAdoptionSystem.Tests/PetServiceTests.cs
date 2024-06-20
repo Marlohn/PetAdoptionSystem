@@ -4,7 +4,7 @@ using PetAdoptionSystem.Domain.Interfaces;
 using PetAdoptionSystem.Domain.Models;
 using PetAdoptionSystem.Tests.Faker;
 
-namespace PetAdoptionSystem.Tests.Services
+namespace PetAdoptionSystem.Tests
 {
     public class PetServiceTests
     {

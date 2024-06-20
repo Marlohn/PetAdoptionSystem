@@ -4,7 +4,7 @@ using PetAdoptionSystem.Domain.Models;
 using PetAdoptionSystem.Infra.Repositories;
 using PetAdoptionSystem.Tests.Faker;
 
-namespace PetAdoptionSystem.Tests.Repositories
+namespace PetAdoptionSystem.Tests
 {
     public class PetRepositoryTests
     {
