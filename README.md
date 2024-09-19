@@ -2,7 +2,7 @@
 The Pet Adoption System is designed to streamline the process of pet adoption. It offers a platform for animal shelters to list pets available for adoption and for potential adopters to view and adopt these pets.
 
 This project is a technical exercise, and you can find the technical details and requirements below.
-https://github.com/Marlohn/PetAdoptionSystem/edit/main/README.md#technical-exercise-description
+[https://github.com/Marlohn/PetAdoptionSystem/edit/main/README.md#technical-exercise-description](https://github.com/Marlohn/PetAdoptionSystem/blob/main/README.md#technical-exercise-description)
 
 ## User Story:
 Manage Pets and Users in the Adoption System
